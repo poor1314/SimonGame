@@ -1,0 +1,126 @@
+// do MVP first, allow bot type its pattern, then i type to match the pattern
+// if match all go on next level, if wrong fail
+// allow reset 
+
+// ✅ Simon shows a pattern — correct
+// ✅ You click the buttons following the pattern — correct
+// ✅ Each successful round adds one more step to the pattern — correct
+// ✅ Pattern always starts from the beginning and adds one new step — correct
+// ✅ One mis-click = restart — correct (this is standard in strict mode)
+// level 4 = win for my game.
+
+-------------------------------------------------------------------------
+const buttonColors = ["red", "blue", "green", "yellow"];
+const gamePattern = [];
+const userPattern = [];
+let index = 0;
+let round = 4; 
+
+Press space to start game
+addEvent(space)
+    progressGamePattern(round)
+    visualAid() for pattern // do this when the game mechanic work // put this here or in progressGamePattern(round)?
+
+// user click on element to match pattern
+addEvent(click)
+    gameStart(e)
+    hasPlayerWonGame()
+    checkStepMatch()
+    hasPlayerWonRound()
+
+progressGamePattern(round)
+    let randomNumber = Math.floor((Math.random() * 4));
+    for(let i = 0; i < round; i++ ){
+        gamePattern.push(buttonColors[pickRandomColor()])
+        // userPattern =  [...gamePattern];
+    }  
+
+gameStart(e){
+    console.log(e);
+    if(e.key === " "){
+        progressGamePattern();
+        console.log("Game Starts!",gamePattern);
+    }
+}
+
+checkStepMatch()
+    if userSelect !== currentColor:
+        announcement("lost")
+        gameOver()
+
+hasPlayerWonCurrentRound()
+    if (gamePattern && userPattern) && gamePattern.length === userPattern.length
+        round += 1
+        progressGamePattern(round) 
+        announcement("lost")
+
+function hasPlayerWonFullGame(){
+    if round === 5:
+        announcement("You've won!")
+        freezeScreen()
+    // press space to start new game
+    // resetGameStats()
+}
+
+function advanceToNextRound(){
+    round += 1;
+    // progressGamePattern(round)
+}
+
+gameOver()
+    (prioritize this later) freezeScreen()
+    if pressed space:
+        resetGameStats()
+        progressGamePattern(round)
+
+function resetGameStats(){
+    gamePattern = [];
+    userPattern = [];
+    round = 4; 
+}
+
+visualAid()
+
+announcement(gameStatus)
+    // parameter is gameStatus, report the status
+
+freezeScreen()
+    // nothing happen until you press space 
+
+---------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

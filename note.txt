@@ -1,0 +1,58 @@
+const gamePattern = [];
+let userPattern;
+const buttonColors = ["red", "blue", "green", "yellow"];
+let round = 2;
+
+function nextSequence(){
+  let randomNumber = Math.floor((Math.random() * 4));
+  return randomNumber;
+}
+
+for(let i = 0; i < round; i++ ){
+    gamePattern.push(buttonColors[nextSequence()])
+    userPattern =  [...gamePattern];
+}
+
+console.log(gamePattern);
+console.log(userPattern);
+
+// this should control newRound
+// call this when there's new game or new round with updated round
+function newRound(){
+    for(let i = 0; i < round; i++ ){
+        // console.log(gamePattern[i]);
+        // console.log(userPattern[i]);
+        console.log("current i:", i);
+
+        if(gamePattern[i] === userPattern[i] && i === gamePattern.length - 1){
+            console.log("you've won");
+            round += 1;
+        }else if(gamePattern[i] === userPattern[i]){
+            console.log("still correct for this i:", i);
+        }else{
+            console.log(`"${gamePattern[i]}" doesn't match with "${userPattern[i]}" game failed!` );
+            return;
+        }
+    }
+}
+
+console.log(newRound());
+
+
+
+// core game play
+
+const gamePattern = ["red", "blue", "green", "yellow"];
+// user click on button and should match with the pattern
+const userPattern = [];
+let index = 0;
+document.addEventListener("click", e => {
+    console.log(e.target.id);
+    // if(e.target.id === "green") console.log("yes");
+    if(e.target.id === gamePattern[index]){
+        console.log("yes, it's", gamePattern[index]);
+        index += 1;
+    } 
+    console.log(index);
+    
+})
