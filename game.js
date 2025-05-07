@@ -1,19 +1,27 @@
+// now the game have set a pattern
+// user can match the pattern
+// but it doesn't proceed to the next level
+
 const buttonColors = ["red", "blue", "green", "yellow"];
 const simonPattern = [];
 const userPattern = [];
-let round = 1;
+let round = 2;
 let index = 0; // might need to be naming this
-
 
 // start game() by pressing space
 document.addEventListener("keydown", e =>{
-    gameStart(e);
+    if (simonPattern.length === 0 ) gameStart(e);
 })
-
+ 
 // user click on button and should match with the pattern
 document.addEventListener("click", e => {
     let userColor = e.target.id;
-    compareUserAndSimonPattern(userColor);
+    if (e.target.classList.contains("btn")) compareUserAndSimonPattern(userColor);
+    console.log("simonPattern atClick", simonPattern);
+    console.log("userPattern atClick", userPattern);
+    
+    
+
 })
 
 function gameStart(e){
@@ -26,6 +34,8 @@ function gameStart(e){
 }
 
 function progressSimonPattern(round){
+    console.log("generate Round", round);
+    
     let randomIndex = Math.floor((Math.random() * 4));
     for(let i = 0; i < round; i++ ){
         simonPattern.push(buttonColors[randomIndex])
@@ -33,18 +43,8 @@ function progressSimonPattern(round){
 }
 
 function compareUserAndSimonPattern(userColor){
-    console.log(userColor);
-
-    // hasPlayerWonCurrentRound()
-    // replace the 1st if-statement with the above line when proceed to next round works
-    if(simonPattern.length === userPattern.length){
-
-        advanceToNextRound()
-        showAnnouncement(`Current Round:${round}`)
-        // call nextRound()
- 
-    }else if(userColor === simonPattern[index]){
-        console.log("yes, it's", simonPattern[index]);
+   
+    if(userColor === simonPattern[index]){
         userPattern.push(simonPattern[index])
         index += 1;
     }
@@ -54,15 +54,16 @@ function compareUserAndSimonPattern(userColor){
         // 1 mis-click = immediately lost
         // gameStart()
     }
-    console.log(index);
-}
 
-function hasPlayerWonCurrentRound(){
+    // hasPlayerWonCurrentRound()
+    // replace the 1st if-statement with the above line when proceed to next round works
     if(simonPattern.length === userPattern.length){
-        // advanceToNextRound()
-        // announce game won via text
-        // call nextRound()
+        console.log("round won!");
+        
         advanceToNextRound()
+        showAnnouncement(`Current Round:${round}`)
+        // console.log(`current: ${round}`,simonPattern); 
+        // call nextRound()
     }
 }
 
@@ -71,7 +72,13 @@ function hasPlayerWonFullGame(){
 
 function advanceToNextRound(){
     round += 1;
-    progressSimonPattern(round)
+    index = 0;
+    simonPattern.length = 0; 
+    userPattern.length = 0;
+    console.log("advanceToNextRound triggered!, current round: ", round);
+    progressSimonPattern(round);
+    console.log(simonPattern); 
+    
 }
 
 function gameOver(){
