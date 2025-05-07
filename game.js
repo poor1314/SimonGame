@@ -5,7 +5,7 @@
 const buttonColors = ["red", "blue", "green", "yellow"];
 const simonPattern = [];
 const userPattern = [];
-let round = 2;
+let round = 4;
 let index = 0; // might need to be naming this
 
 // start game() by pressing space
@@ -16,16 +16,14 @@ document.addEventListener("keydown", e =>{
 // user click on button and should match with the pattern
 document.addEventListener("click", e => {
     let userColor = e.target.id;
-    if (e.target.classList.contains("btn")) compareUserAndSimonPattern(userColor);
+    if (e.target.classList.contains("btn") && simonPattern.length > 0) compareUserAndSimonPattern(userColor);
     console.log("simonPattern atClick", simonPattern);
     console.log("userPattern atClick", userPattern);
-    
-    
 
+    
 })
 
 function gameStart(e){
-    // console.log(e);
     if(e.key === " "){
         progressSimonPattern(round);
         console.log("Game Starts!",simonPattern);
@@ -33,12 +31,15 @@ function gameStart(e){
     }
 }
 
+function indexGenerate(){
+   return Math.floor((Math.random() * 4));
+}
+
 function progressSimonPattern(round){
     console.log("generate Round", round);
     
-    let randomIndex = Math.floor((Math.random() * 4));
     for(let i = 0; i < round; i++ ){
-        simonPattern.push(buttonColors[randomIndex])
+        simonPattern.push(buttonColors[indexGenerate()])
     }  
 }
 
@@ -50,11 +51,9 @@ function compareUserAndSimonPattern(userColor){
     }
     else{
         showAnnouncement(`Game failed Simon's ${simonPattern[index]} vs your ${userColor}`)
-        console.log(`game failed ${userColor} not equals to ${simonPattern[index]}`);
-        // 1 mis-click = immediately lost
-        // gameStart()
+        // hasPlayerWonFullGame("won match, Game lost!");
+        // return; 
     }
-
     // hasPlayerWonCurrentRound()
     // replace the 1st if-statement with the above line when proceed to next round works
     if(simonPattern.length === userPattern.length){
@@ -65,9 +64,14 @@ function compareUserAndSimonPattern(userColor){
         // console.log(`current: ${round}`,simonPattern); 
         // call nextRound()
     }
+    if(simonPattern.length > 4){
+        hasPlayerWonFullGame("Player won! press space to start a new game"); 
+    }
 }
 
-function hasPlayerWonFullGame(){
+function hasPlayerWonFullGame(gameText){
+    showAnnouncement("Player won! press space to start a new game");
+    resetGameStats();
 }
 
 function advanceToNextRound(){
@@ -86,9 +90,10 @@ function gameOver(){
 }
 
 function resetGameStats(){
-    simonPattern = [];
-    userPattern = [];
+    index = 0; 
     round = 1; 
+    simonPattern.length = 0; 
+    userPattern.length = 0;
 }
 
 function visualAid(){
