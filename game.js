@@ -1,12 +1,32 @@
-// now the game have set a pattern
-// user can match the pattern
-// but it doesn't proceed to the next level
+// add visual
 
 const buttonColors = ["red", "blue", "green", "yellow"];
 const simonPattern = [];
 const userPattern = [];
 let round = 1;
 let index = 0; // might need to be naming this
+let blueButtonSound = new Audio('/sounds/blue.mp3');
+let greenButtonSound = new Audio("/sounds/green.mp3");
+let redButtonSound = new Audio("/sounds/red.mp3"); 
+let yellowButtonSound = new Audio("/sounds/yellow.mp3");
+let wrongChoiceSound = new Audio("/sounds/wrong.mp3")
+
+
+function soundAnnouncement(sound){
+    if (sound !== simonPattern[index]) return wrongChoiceSound.play();
+
+    switch(sound){
+        case "red":
+            return redButtonSound.play();
+        case "blue":
+            return blueButtonSound.play();
+        case "green":
+            return greenButtonSound.play();
+        case "yellow":
+            return yellowButtonSound.play();
+       
+    }
+}
 
 // start game() by pressing space
 document.addEventListener("keydown", e =>{
@@ -35,8 +55,6 @@ function indexGenerate(){
 }
 
 function progressSimonPattern(round){
-    console.log("generate Round", round);
-    
     for(let i = 0; i < round; i++ ){
         simonPattern.push(buttonColors[indexGenerate()])
     }  
@@ -44,6 +62,10 @@ function progressSimonPattern(round){
 
 function compareUserAndSimonPattern(userColor){
     showAnnouncement(`Current Round:${round}`)
+    // if(userColor === "red") redButtonSound.play();
+
+    if (buttonColors.includes(userColor)) soundAnnouncement(userColor);
+   
     if(userColor === simonPattern[index]){
         userPattern.push(simonPattern[index])
         index += 1;
@@ -68,8 +90,8 @@ function compareUserAndSimonPattern(userColor){
     }
 }
 
-function hasPlayerWonFullGame(gameText){
-    showAnnouncement("Player won! press space to start a new game");
+function hasPlayerWonFullGame(gameWonText){
+    showAnnouncement(gameWonText);
     resetGameStats();
 }
 
@@ -113,51 +135,3 @@ function freezeScreen(){
 // }
 
 
-// ---------------------------------------------------------
-
-// function checkWinCondition(userColor){
-//     console.log(userColor);
-
-//     if(simonPattern.length === userPattern.length){
-//         // advanceToNextRound()
-//         // announce game won via text
-//         // call nextRound()
-
-//     }else if(userColor === simonPattern[index]){
-//         console.log("yes, it's", simonPattern[index]);
-//         userPattern.push(simonPattern[index])
-//         index += 1;
-//     }
-//     else{
-//         console.log(`game failed ${userColor} not equals to ${simonPattern[index]}`);
-//         // 1 mis-click = immediately lost
-//         // gameStart()
-//     }
-//     console.log(index);
-// }
-
-
-// console.log(simonPattern);
-// console.log(userPattern);
-
-// // this should control newRound
-// // call this when there's new game or new round with updated round
-// function newRound(){
-//     for(let i = 0; i < round; i++ ){
-//         // console.log(simonPattern[i]);
-//         // console.log(userPattern[i]);
-//         console.log("current i:", i);
-
-//         if(simonPattern[i] === userPattern[i] && i === simonPattern.length - 1){
-//             console.log("you've won");
-//             round += 1;
-//         }else if(simonPattern[i] === userPattern[i]){
-//             console.log("still correct for this i:", i);
-//         }else{
-//             console.log(`"${simonPattern[i]}" doesn't match with "${userPattern[i]}" game failed!` );
-//             return;
-//         }
-//     }
-// }
-
-// console.log(newRound());
