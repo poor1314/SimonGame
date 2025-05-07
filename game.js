@@ -5,7 +5,7 @@
 const buttonColors = ["red", "blue", "green", "yellow"];
 const simonPattern = [];
 const userPattern = [];
-let round = 4;
+let round = 1;
 let index = 0; // might need to be naming this
 
 // start game() by pressing space
@@ -16,18 +16,17 @@ document.addEventListener("keydown", e =>{
 // user click on button and should match with the pattern
 document.addEventListener("click", e => {
     let userColor = e.target.id;
+
     if (e.target.classList.contains("btn") && simonPattern.length > 0) compareUserAndSimonPattern(userColor);
     console.log("simonPattern atClick", simonPattern);
     console.log("userPattern atClick", userPattern);
-
-    
 })
 
 function gameStart(e){
     if(e.key === " "){
         progressSimonPattern(round);
         console.log("Game Starts!",simonPattern);
-        showAnnouncement(`Current Round:${round}`)
+        showAnnouncement(`Game Start! Current Round:${round}`)
     }
 }
 
@@ -44,15 +43,15 @@ function progressSimonPattern(round){
 }
 
 function compareUserAndSimonPattern(userColor){
-   
+    showAnnouncement(`Current Round:${round}`)
     if(userColor === simonPattern[index]){
         userPattern.push(simonPattern[index])
         index += 1;
     }
     else{
-        showAnnouncement(`Game failed Simon's ${simonPattern[index]} vs your ${userColor}`)
-        // hasPlayerWonFullGame("won match, Game lost!");
-        // return; 
+        showAnnouncement(`Game lost! ${simonPattern[index]}(Simon) vs ${userColor}(you) \n press space to start new game!`)
+        resetGameStats();
+        return;
     }
     // hasPlayerWonCurrentRound()
     // replace the 1st if-statement with the above line when proceed to next round works
@@ -60,7 +59,7 @@ function compareUserAndSimonPattern(userColor){
         console.log("round won!");
         
         advanceToNextRound()
-        showAnnouncement(`Current Round:${round}`)
+        // showAnnouncement(`Current Round:${round}`)
         // console.log(`current: ${round}`,simonPattern); 
         // call nextRound()
     }
@@ -79,6 +78,7 @@ function advanceToNextRound(){
     index = 0;
     simonPattern.length = 0; 
     userPattern.length = 0;
+    showAnnouncement(`Round Won! proceed to round:${round}`)
     console.log("advanceToNextRound triggered!, current round: ", round);
     progressSimonPattern(round);
     console.log(simonPattern); 
