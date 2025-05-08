@@ -1,4 +1,6 @@
 // add visual
+// 2. show game pattern 
+// pattern doesn't show correctly 
 
 const buttonColors = ["red", "blue", "green", "yellow"];
 const simonPattern = [];
@@ -11,10 +13,8 @@ let redButtonSound = new Audio("/sounds/red.mp3");
 let yellowButtonSound = new Audio("/sounds/yellow.mp3");
 let wrongChoiceSound = new Audio("/sounds/wrong.mp3")
 
-
 function soundAnnouncement(sound){
     if (sound !== simonPattern[index]) return wrongChoiceSound.play();
-
     switch(sound){
         case "red":
             return redButtonSound.play();
@@ -24,7 +24,6 @@ function soundAnnouncement(sound){
             return greenButtonSound.play();
         case "yellow":
             return yellowButtonSound.play();
-       
     }
 }
 
@@ -36,15 +35,26 @@ document.addEventListener("keydown", e =>{
 // user click on button and should match with the pattern
 document.addEventListener("click", e => {
     let userColor = e.target.id;
-
-    if (e.target.classList.contains("btn") && simonPattern.length > 0) compareUserAndSimonPattern(userColor);
+    let currentElement = e.target
+    
+    console.log("e.target:" , e.target);
+    console.log(userColor);
+    
+    if (e.target.classList.contains("btn") && simonPattern.length > 0){
+        gameEffect(currentElement, "opacityChange");
+        compareUserAndSimonPattern(userColor, currentElement);
+    } 
     console.log("simonPattern atClick", simonPattern);
     console.log("userPattern atClick", userPattern);
 })
 
+
+
+
 function gameStart(e){
     if(e.key === " "){
         progressSimonPattern(round);
+        
         console.log("Game Starts!",simonPattern);
         showAnnouncement(`Game Start! Current Round:${round}`)
     }
@@ -57,14 +67,25 @@ function indexGenerate(){
 function progressSimonPattern(round){
     for(let i = 0; i < round; i++ ){
         simonPattern.push(buttonColors[indexGenerate()])
+        let color = document.querySelector("." + buttonColors[i]);
+        console.log("whats the color?", color);
+        
+        gameEffect(color, "opacityChange");
     }  
+}
+
+function gameEffect(currentElement, message){
+    currentElement.classList.toggle(message);
+    setTimeout(() => {
+        currentElement.classList.toggle(message);
+    }, 200);
 }
 
 function compareUserAndSimonPattern(userColor){
     showAnnouncement(`Current Round:${round}`)
-    // if(userColor === "red") redButtonSound.play();
+   
 
-    if (buttonColors.includes(userColor)) soundAnnouncement(userColor);
+    // if (buttonColors.includes(userColor)) soundAnnouncement(userColor);
    
     if(userColor === simonPattern[index]){
         userPattern.push(simonPattern[index])
@@ -73,6 +94,11 @@ function compareUserAndSimonPattern(userColor){
     else{
         showAnnouncement(`Game lost! ${simonPattern[index]}(Simon) vs ${userColor}(you) \n press space to start new game!`)
         resetGameStats();
+        // document.body.classList.toggle(message)
+        document.body.style.backgroundColor = "red";
+        setTimeout(() => {
+            document.body.style.backgroundColor = "#011F3F";
+        }, 200);
         return;
     }
     // hasPlayerWonCurrentRound()
@@ -107,9 +133,7 @@ function advanceToNextRound(){
     
 }
 
-function gameOver(){
-    resetGameStats()
-}
+
 
 function resetGameStats(){
     index = 0; 

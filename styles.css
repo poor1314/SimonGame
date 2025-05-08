@@ -24,7 +24,15 @@ body {
   width: 200px;
   border: 10px solid black;
   border-radius: 20%;
-  
+  /* opacity: 0.1; */
+}
+
+.opacityChange{
+  opacity: 0.1;
+}
+
+.gameLost{
+  background-color: red;
 }
 
 .fade{
