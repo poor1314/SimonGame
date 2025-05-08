@@ -7,11 +7,12 @@ const simonPattern = [];
 const userPattern = [];
 let round = 1;
 let index = 0; // might need to be naming this
-let blueButtonSound = new Audio('/sounds/blue.mp3');
-let greenButtonSound = new Audio("/sounds/green.mp3");
-let redButtonSound = new Audio("/sounds/red.mp3"); 
-let yellowButtonSound = new Audio("/sounds/yellow.mp3");
-let wrongChoiceSound = new Audio("/sounds/wrong.mp3")
+const blueButtonSound = new Audio('/sounds/blue.mp3');
+const greenButtonSound = new Audio("/sounds/green.mp3");
+const redButtonSound = new Audio("/sounds/red.mp3"); 
+const yellowButtonSound = new Audio("/sounds/yellow.mp3");
+const wrongChoiceSound = new Audio("/sounds/wrong.mp3")
+let animationComplete = false;
 
 function soundAnnouncement(sound){
     if (sound !== simonPattern[index]) return wrongChoiceSound.play();
