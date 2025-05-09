@@ -1,82 +1,75 @@
-const buttonColors = ["red", "blue", "green", "yellow"];
-const simonPattern = [];
-const userPattern = [];
-let round = 1;
-let index = 0; // might need to be naming this
-let lastIndex = 0;
-const blueButtonSound = new Audio('/sounds/blue.mp3');
-const greenButtonSound = new Audio("/sounds/green.mp3");
-const redButtonSound = new Audio("/sounds/red.mp3"); 
-const yellowButtonSound = new Audio("/sounds/yellow.mp3");
-const wrongChoiceSound = new Audio("/sounds/wrong.mp3")
+// === Configuration ===
+const availableColors = ["red", "blue", "green", "yellow"];
 
+// === Sound Assets ===
+const blueSound = new Audio('/sounds/blue.mp3');
+const greenSound = new Audio("/sounds/green.mp3");
+const redSound = new Audio("/sounds/red.mp3"); 
+const yellowSound = new Audio("/sounds/yellow.mp3");
+const errorSound = new Audio("/sounds/wrong.mp3");
+
+// === Game State ===
+const simonSequence = [];
+const playerSequence = [];
+let currentRound = 1;
+let currentStepIndex = 0;
+let currentSimonStep = 0;
+
+// === Functions ===
 function soundAnnouncement(sound){
-    if (sound !== simonPattern[index]) return wrongChoiceSound.play();
+    if (sound !== simonSequence[currentStepIndex]) return errorSound.play();
     switch(sound){
         case "red":
-            return redButtonSound.play();
+            return redSound.play();
         case "blue":
-            return blueButtonSound.play();
+            return blueSound.play();
         case "green":
-            return greenButtonSound.play();
+            return greenSound.play();
         case "yellow":
-            return yellowButtonSound.play();
+            return yellowSound.play();
     }
 }
-
-// start game() by pressing space
+// only allow game start when the simon sequence is empty
 document.addEventListener("keydown", e =>{
-    if (simonPattern.length === 0 ) gameStart(e);
-})
- 
-// user click on button and should match with the pattern
-document.addEventListener("click", e => {
-    let userColor = e.target.id;
-    let currentElement = e.target
-    if (e.target.classList.contains("btn") && simonPattern.length > 0){
-        gameEffect(currentElement, "opacityChange", 200);
-        compareUserAndSimonPattern(userColor, currentElement);
-    } 
-    // console.log("simonPattern atClick", simonPattern);
-    console.log("userPattern atClick", userPattern);
-})
+    if (simonSequence.length === 0 ) gameStart(e);
+});
 
+document.addEventListener("click", e => {
+    handleGameButtonClick(e);
+});
+
+function handleGameButtonClick(e){
+    let userColor = e.target.id;
+    let currentElement = e.target;
+    // only take action on class .btn && when game start where simonSequence's length is >= 1
+    if (e.target.classList.contains("btn") && simonSequence.length > 0){
+        // change in opacity to show the simon's pattern
+        gameEffect(currentElement, "opacityChange", 200);
+        comparePlayerAndSimonSequence(userColor, currentElement);
+    } 
+}
+
+// press space to start a new game
 function gameStart(e){
     if(e.key === " "){
-        progressSimonPattern(round);
-        showAnnouncement(`Game Start! Current Round:${round}`)
+        progressSimonSequence();
+        showAnnouncement(`Game Start! Current Round:${currentRound}`);
     }
 }
-
-function indexGenerate(){
+// generate between number 0 - 3 
+function generateRandomIndex(){
    return Math.floor((Math.random() * 4));
 }
 
-function progressSimonPattern(){
-   
-        simonPattern.push(buttonColors[indexGenerate()])
-        console.log("index",index);
-        console.log("lastIndex",lastIndex);
-        
-        
-        let color = document.querySelector("." + simonPattern[lastIndex]);
-        
-        delayGameEffect(color);
-    console.log("Simon's patten", simonPattern);
+// the next simon's sequence is generated randomly and 1 new sequence per game
+function progressSimonSequence(){
+    simonSequence.push(availableColors[generateRandomIndex()]);
+    let color = document.querySelector("." + simonSequence[currentSimonStep]);
+    // show the simon's sequence through opacity changes
+    gameEffect(color,"opacityChange", 200)
 }
 
-function delayGameEffect(color){
-    setTimeout(function() {
-        color.classList.toggle("opacityChange"); 
-    }, 200 * (lastIndex + 1));
-
-    setTimeout(function() {
-        // console.log(buttonColors[i]);
-        color.classList.toggle("opacityChange"); 
-    }, 200 * (lastIndex + 2));
-}
-
-
+// allow customized effect toggle from css
 function gameEffect(currentElement, effect, time){
     currentElement.classList.toggle(effect);
     setTimeout(() => {
@@ -84,62 +77,66 @@ function gameEffect(currentElement, effect, time){
     }, time);
 }
 
-function compareUserAndSimonPattern(userColor){
-    showAnnouncement(`correct`)
-  
-    // play sounds
-    if (buttonColors.includes(userColor)) soundAnnouncement(userColor);
-   
-    if(userColor === simonPattern[index]){
-        userPattern.push(simonPattern[index])
-        index += 1;
-        
+// compare player and simon sequence 
+function comparePlayerAndSimonSequence(userColor){
+    showAnnouncement(`correct`);
+    // make sound for player's choice
+    if (availableColors.includes(userColor)) soundAnnouncement(userColor);
+
+    // whenever user matches simon's pattern its color will be pushed in an array
+    if(userColor === simonSequence[currentStepIndex]){
+        playerSequence.push(simonSequence[currentStepIndex]);
+        currentStepIndex += 1;
     }
     else{
-        showAnnouncement(`Game lost! ${simonPattern[index]}(Simon) vs ${userColor}(you) \n press space to start new game!`)
+        showAnnouncement(`Game lost! ${simonSequence[currentStepIndex]}(Simon) vs ${userColor}(you) \n press space to start new game!`);
         resetGameStats();
-       
-        document.body.style.backgroundColor = "red";
-        setTimeout(() => {
-            document.body.style.backgroundColor = "#011F3F";
-        }, 200);
+        
+        let bodyElement = document.querySelector("body");
+        // make a mistake will turn background into red
+        gameEffect(bodyElement, "flashRedBackground", 1000); 
         return;
     }
+    // when the size of array becomes 4 is when the game is won
+    if(playerSequence.length >= 4){
+        playerWonFullGame("Player won! press space to start a new game"); 
 
-    if(userPattern.length >= 2){
-        hasPlayerWonFullGame("Player won! press space to start a new game"); 
-    } else if(simonPattern.length === userPattern.length){
-        // console.log("round won!");
-        advanceToNextRound()
+    // if size is less than 4, advance to next round with new pattern 
+    } else if(simonSequence.length === playerSequence.length){ 
+        setTimeout(() => {
+            advanceToNextRound();
+        }, 500);
     }
 }
 
-function hasPlayerWonFullGame(gameWonText){
+// reset stats once game has been won
+function playerWonFullGame(gameWonText){
     showAnnouncement(gameWonText);
     resetGameStats();
 }
 
 function advanceToNextRound(){
-    lastIndex += 1;
-    round += 1;
-    index = 0;
-    // simonPattern.length = 0;  
-    userPattern.length = 0;
-    showAnnouncement(`Round Won! current round:${round}`)
-    console.log("advanceToNextRound triggered!, current round: ", round);
-    progressSimonPattern(round);
-    // console.log(simonPattern); 
+    currentSimonStep += 1;
+    currentRound += 1;
+
+    // reset these two so that the array push starting at index 0 
+    // and empty array to store the match
+    // for next round's comparison
+    currentStepIndex = 0;
+    playerSequence.length = 0;
+    showAnnouncement(`Round Won! current round:${currentRound}`);
+    progressSimonSequence(currentRound);
 }
 
+// full reset upon lose/win
 function resetGameStats(){
-    index = 0; 
-    round = 1; 
-    lastIndex = 0;
-    simonPattern.length = 0; 
-    userPattern.length = 0;
+    currentStepIndex = 0; 
+    currentRound = 1; 
+    currentSimonStep = 0;
+    simonSequence.length = 0; 
+    playerSequence.length = 0;
 }
 
 function showAnnouncement(gameStatus){
     document.querySelector("h1").textContent = gameStatus;
 }
-

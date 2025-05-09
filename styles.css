@@ -27,6 +27,10 @@ body {
  
 }
 
+.flashRedBackground{
+  background-color: red;
+}
+
 .opacityChange{
   opacity: 0.1;
 }
