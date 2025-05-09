@@ -9,10 +9,9 @@ let currentSimonStep = 0;
 
 // === Functions ===
 function soundAnnouncement(sound){
-    const errorSound = new Audio("/sounds/wrong.mp3");
+    const errorSound = new Audio("sounds/wrong.mp3");
     if (sound !== simonSequence[currentStepIndex]) return errorSound.play();
-    else return new Audio("/sounds/" + sound + ".mp3").play();
-
+    else return new Audio("sounds/" + sound + ".mp3").play();
 }
 // only allow game start when the simon sequence is empty
 document.addEventListener("keydown", e =>{
@@ -103,7 +102,6 @@ function playerWonFullGame(gameWonText){
 function advanceToNextRound(){
     currentSimonStep += 1;
     currentRound += 1;
-
     // reset these two so that the array push starting at index 0 
     // and empty array to store the match
     // for next round's comparison
