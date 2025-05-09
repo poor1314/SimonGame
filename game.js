@@ -31,9 +31,9 @@ function soundAnnouncement(sound){
 }
 // only allow game start when the simon sequence is empty
 document.addEventListener("keydown", e =>{
-    if (simonSequence.length === 0 ) gameStart(e);
+    if (simonSequence.length === 0) gameStart(e);
 });
-
+    
 document.addEventListener("click", e => {
     handleGameButtonClick(e);
 });
@@ -94,7 +94,7 @@ function comparePlayerAndSimonSequence(userColor){
         
         let bodyElement = document.querySelector("body");
         // make a mistake will turn background into red
-        gameEffect(bodyElement, "flashRedBackground", 1000); 
+        gameEffect(bodyElement, "flashRedBackground", 400); 
         return;
     }
     // when the size of array becomes 4 is when the game is won
@@ -105,7 +105,7 @@ function comparePlayerAndSimonSequence(userColor){
     } else if(simonSequence.length === playerSequence.length){ 
         setTimeout(() => {
             advanceToNextRound();
-        }, 500);
+        }, 400);
     }
 }
 
