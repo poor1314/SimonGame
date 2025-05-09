@@ -1,13 +1,5 @@
 // === Configuration ===
 const availableColors = ["red", "blue", "green", "yellow"];
-
-// === Sound Assets ===
-const blueSound = new Audio('/sounds/blue.mp3');
-const greenSound = new Audio("/sounds/green.mp3");
-const redSound = new Audio("/sounds/red.mp3"); 
-const yellowSound = new Audio("/sounds/yellow.mp3");
-const errorSound = new Audio("/sounds/wrong.mp3");
-
 // === Game State ===
 const simonSequence = [];
 const playerSequence = [];
@@ -17,17 +9,10 @@ let currentSimonStep = 0;
 
 // === Functions ===
 function soundAnnouncement(sound){
+    const errorSound = new Audio("/sounds/wrong.mp3");
     if (sound !== simonSequence[currentStepIndex]) return errorSound.play();
-    switch(sound){
-        case "red":
-            return redSound.play();
-        case "blue":
-            return blueSound.play();
-        case "green":
-            return greenSound.play();
-        case "yellow":
-            return yellowSound.play();
-    }
+    else return new Audio("/sounds/" + sound + ".mp3").play();
+
 }
 // only allow game start when the simon sequence is empty
 document.addEventListener("keydown", e =>{
